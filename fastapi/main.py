@@ -6,7 +6,6 @@ from pydantic import BaseModel
 from bs4 import BeautifulSoup
 
 import logging
-import json_logging
 from datetime import datetime
 import httpx
 import sys
