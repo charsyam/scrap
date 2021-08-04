@@ -55,7 +55,7 @@ def parse_opengraph(body: str):
     description = soup.find("meta",  {"property":"og:description"})
     author = soup.find("meta",  {"property":"og:article:author"})
 
-    resp = {"code": 0}
+    resp = {}
     scrap = {}
     scrap["title"] = title["content"] if title else None
     scrap["url"] = url["content"] if url else None
@@ -66,6 +66,10 @@ def parse_opengraph(body: str):
     resp["scrap"] = scrap
 
     return resp
+
+@app.get("/heath_check")
+async def health_check():
+    return "OK"
 
 @app.get("/api/v1/scrap/")
 #@cache()
