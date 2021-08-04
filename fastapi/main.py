@@ -67,7 +67,7 @@ def parse_opengraph(body: str):
 
     return resp
 
-@app.get("/heath_check")
+@app.get("/health_check")
 async def health_check():
     return "OK"
 
