@@ -30,6 +30,7 @@ init_log(app, conf.section("log")["path"])
 init_cors(app)
 init_instrumentator(app)
 
+typeconf = conf.section("type")
 
 @app.exception_handler(UnicornException)
 async def unicorn_exception_handler(request: Request, exc: UnicornException):
@@ -76,6 +77,8 @@ async def scrap(url: str):
     try:
         url = urllib.parse.unquote(url)
         body = await call_api(url)
-        return parse_opengraph(body)
+        resp = parse_opengraph(body)
+        resp["type"] = typeconf["type"]
+        return resp
     except Exception as e:
         raise UnicornException(status=400, code=-20000, message=str(e))
