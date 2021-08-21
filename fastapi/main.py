@@ -17,12 +17,14 @@ from log import init_log
 from cors import init_cors
 from instrumentator import init_instrumentator
 from config import Config
+from localcache import LocalCache
 
 import urllib.parse
 
 
 app = FastAPI()
 settings = Settings()
+lc = LocalCache()
 
 conf = Config(settings.CONFIG_PATH)
 
@@ -76,8 +78,13 @@ async def health_check():
 async def scrap(url: str):
     try:
         url = urllib.parse.unquote(url)
-        body = await call_api(url)
-        resp = parse_opengraph(body)
+        resp = lc.get(url)
+        if not resp:
+            print("Not Cached: " + url)
+            body = await call_api(url)
+            resp = parse_opengraph(body)
+            lc.put(url, resp, 120)
+
         resp["type"] = typeconf["type"]
         return resp
     except Exception as e:
